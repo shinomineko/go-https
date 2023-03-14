@@ -1,10 +1,10 @@
-FROM golang:1.19 as builder
-WORKDIR /src
+FROM cgr.dev/chainguard/go:latest as builder
+WORKDIR /work
 COPY . .
 RUN go mod tidy \
 	&& go build .
 
-FROM ubuntu:jammy
-COPY --from=builder /src/go-https /go-https
+FROM cgr.dev/chainguard/glibc-dynamic:latest
+COPY --from=builder /work/go-https /go-https
 EXPOSE 8443
-ENTRYPOINT [ "/go-https" ]
+CMD [ "/go-https" ]
